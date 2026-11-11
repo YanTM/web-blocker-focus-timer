@@ -1,0 +1,16 @@
+Web Blocker Focus Timer
+Copyright 2026 Yan Lunin
+
+This distribution is based on the saved focus-timer.html output from Version 1
+of the Kaggle notebook "Pomodoro Focus Timer — 25/5 by Web Blocker":
+https://www.kaggle.com/code/yanlunin/pomodoro-focus-timer-25-5-by-web-blocker
+
+The original publication and this distribution use the Apache License,
+Version 2.0. See LICENSE.
+
+The timer logic and behavior are unchanged. The Web Blocker link's referral
+source has been changed from Kaggle to GitHub.
+
+The Web Blocker name and brand identifiers identify this work. Trademark
+permissions are limited to those provided by Section 6 of the Apache License,
+Version 2.0. This notice does not grant additional trademark rights.

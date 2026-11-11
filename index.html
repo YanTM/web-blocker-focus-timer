@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Web Blocker — Focus Timer</title>
+  <style>
+    :root { color-scheme: dark; font-family: Roboto, Arial, sans-serif; background: #9F2B2C; color: #FFFFFF; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 280px; padding: clamp(14px, 4vw, 32px); }
+    .wb-timer { width: min(100%, 720px); margin: 0 auto; background: #9F2B2C; }
+    .wb-timer__header { display: flex; align-items: center; gap: 14px; padding: 4px 0 24px; }
+    .wb-timer__brand-icon { width: 44px; height: 44px; flex: 0 0 44px; display: grid; place-items: center; border-radius: 50%; background: #F86466; }
+    .wb-timer__brand-icon svg { width: 22px; height: 22px; }
+    .wb-timer__brand { margin: 0 0 4px; color: #E9C9CA; font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+    .wb-timer h1 { margin: 0; font-family: Montserrat, Roboto, Arial, sans-serif; font-size: clamp(22px, 4vw, 28px); font-weight: 800; line-height: 1.15; }
+    .wb-timer__panel { display: grid; justify-items: center; padding: 26px clamp(16px, 4vw, 32px) 24px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 22px; background: rgba(80, 7, 8, .13); }
+    .wb-timer__rhythm { margin: 0 0 22px; color: #E9C9CA; font-size: 14px; line-height: 1.4; text-align: center; }
+    .wb-timer__dial { width: min(64vw, 252px); aspect-ratio: 1; position: relative; display: grid; place-items: center; }
+    .wb-timer__ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+    .wb-timer__ring-track { fill: none; stroke: rgba(255, 255, 255, .15); stroke-width: 5; }
+    .wb-timer__ring-value { fill: none; stroke: #FFFFFF; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 565.4867; stroke-dashoffset: 0; }
+    .wb-timer__digits { position: relative; font-size: clamp(48px, 10vw, 66px); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.04em; line-height: 1; }
+    .wb-timer__phase { margin: 18px 0 8px; font-size: 15px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .wb-timer__status { margin: 0; min-height: 42px; max-width: 460px; font-size: 14px; line-height: 1.5; text-align: center; color: #E9C9CA; }
+    .wb-timer__controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; margin-top: 22px; }
+    .wb-timer button { appearance: none; min-height: 48px; padding: 12px 8px; border: 1px solid rgba(255,255,255,.65); border-radius: 10px; background: transparent; color: #FFFFFF; font: inherit; font-size: 15px; font-weight: 700; line-height: 1.2; cursor: pointer; }
+    .wb-timer button[data-action="start"] { background: #FFFFFF; border-color: #FFFFFF; color: #7D1F20; }
+    .wb-timer button:not(:disabled):hover { background: rgba(255,255,255,.12); }
+    .wb-timer button[data-action="start"]:not(:disabled):hover { background: #FBE9E8; }
+    .wb-timer button:disabled { opacity: .4; cursor: default; }
+    .wb-timer button:focus-visible, .wb-timer a:focus-visible { outline: 3px solid #FFFFFF; outline-offset: 4px; }
+    .wb-timer__help { margin: 16px 0 0; color: #E9C9CA; font-size: 12px; line-height: 1.5; text-align: center; }
+    .wb-timer__footer { margin-top: 24px; padding: 22px 0 4px; border-top: 1px solid rgba(255,255,255,.25); }
+    .wb-timer__cta { color: #FFFFFF; font-size: 15px; font-weight: 700; line-height: 1.5; text-underline-offset: 4px; }
+    .wb-timer__bonus { margin: 8px 0 0; color: #E9C9CA; font-size: 13px; line-height: 1.5; }
+    .wb-timer__nojs { border: 1px solid #FFFFFF; padding: 12px; line-height: 1.5; }
+    @media (max-width: 360px) { .wb-timer__controls { gap: 7px; } .wb-timer__header { padding-bottom: 20px; } .wb-timer__panel { padding-top: 22px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main class="wb-timer" data-wb-focus-timer aria-label="Web Blocker Focus Timer">
+    <header class="wb-timer__header">
+      <span class="wb-timer__brand-icon" aria-hidden="true">
+        <!-- Exact focus-timer geometry from WB's canonical product-icon-registry.js. -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="14" r="8"></circle><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="14" x2="12" y2="10"></line><line x1="12" y1="14" x2="15" y2="14"></line></svg>
+      </span>
+      <div><p class="wb-timer__brand">WEB BLOCKER</p><h1>Focus Timer</h1></div>
+    </header>
+    <section class="wb-timer__panel" aria-label="Timer controls">
+      <p class="wb-timer__rhythm">25 minutes work · 5 minutes break</p>
+      <div class="wb-timer__dial">
+        <svg class="wb-timer__ring" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+          <circle class="wb-timer__ring-track" r="90" cx="100" cy="100"></circle>
+          <circle class="wb-timer__ring-value" data-role="progress" r="90" cx="100" cy="100"></circle>
+        </svg>
+        <output class="wb-timer__digits" data-role="time" role="timer" aria-live="off" aria-label="Work time remaining">25:00</output>
+      </div>
+      <p class="wb-timer__phase" data-role="phase">Work</p>
+      <p class="wb-timer__status" data-role="status" role="status" aria-live="polite" aria-atomic="true">Ready when you are. Press Start.</p>
+      <div class="wb-timer__controls">
+        <button type="button" data-action="start" aria-label="Start or resume the current phase" disabled>Start</button>
+        <button type="button" data-action="pause" disabled>Pause</button>
+        <button type="button" data-action="reset" disabled>Reset</button>
+      </div>
+      <p class="wb-timer__help">Reset restores the current phase. Press Start for the next one.<br>Keep this timer open. A short sound marks completion.</p>
+      <noscript><p class="wb-timer__nojs">Enable JavaScript to use the timer.</p></noscript>
+    </section>
+    <footer class="wb-timer__footer">
+      <a class="wb-timer__cta" data-role="cta" href="https://webblockerapp.com/?utm_source=github&amp;utm_medium=referral&amp;utm_campaign=wb_pomodoro_lite" target="_blank" rel="noopener noreferrer">Need website blocking? Open Web Blocker</a>
+      <p class="wb-timer__bonus">Block distracting websites with schedules and exceptions.</p>
+    </footer>
+    <script>
+    (() => {
+      'use strict';
+
+      /* WB_TIMER_CORE_BEGIN — pure state machine; extracted by the local unit tests. */
+      function createFocusTimer(now = () => Date.now()) {
+        const durations = Object.freeze({ work: 25 * 60 * 1000, break: 5 * 60 * 1000 });
+        let phase = 'work';
+        let remainingMs = durations.work;
+        let running = false;
+        let deadline = null;
+
+        function snapshot() {
+          const left = running ? Math.max(0, deadline - now()) : remainingMs;
+          return Object.freeze({ phase, running, deadline, durationMs: durations[phase], remainingMs: left, remainingSeconds: Math.ceil(left / 1000) });
+        }
+        function tick() {
+          let completedPhase = null;
+          if (running) {
+            remainingMs = Math.max(0, deadline - now());
+            if (remainingMs === 0) {
+              completedPhase = phase;
+              phase = phase === 'work' ? 'break' : 'work';
+              remainingMs = durations[phase];
+              running = false;
+              deadline = null;
+            }
+          }
+          return { state: snapshot(), completedPhase };
+        }
+        function start() {
+          const event = tick();
+          // A late callback completes exactly one phase; the next phase needs a new Start.
+          if (!event.completedPhase && !running) {
+            running = true;
+            deadline = now() + remainingMs;
+          }
+          return { state: snapshot(), completedPhase: event.completedPhase };
+        }
+        function pause() {
+          const event = tick();
+          if (running) {
+            remainingMs = Math.max(0, deadline - now());
+            running = false;
+            deadline = null;
+          }
+          return { state: snapshot(), completedPhase: event.completedPhase };
+        }
+        function reset() {
+          const event = tick();
+          remainingMs = durations[phase];
+          running = false;
+          deadline = null;
+          return { state: snapshot(), completedPhase: event.completedPhase };
+        }
+        return Object.freeze({ getState: snapshot, tick, start, pause, reset });
+      }
+      /* WB_TIMER_CORE_END */
+
+      // All selectors, state and listeners belong to this instance, including repeated notebook runs.
+      const script = document.currentScript;
+      const root = script && script.closest('[data-wb-focus-timer]');
+      if (!root || root.dataset.wbTimerBound === 'true') return;
+      root.dataset.wbTimerBound = 'true';
+      const find = role => root.querySelector('[data-role="' + role + '"]');
+      const time = find('time');
+      const phaseLabel = find('phase');
+      const status = find('status');
+      const progress = find('progress');
+      const startButton = root.querySelector('[data-action="start"]');
+      const pauseButton = root.querySelector('[data-action="pause"]');
+      const resetButton = root.querySelector('[data-action="reset"]');
+      const timer = createFocusTimer();
+      const circumference = 2 * Math.PI * 90;
+      let interval = null;
+      let audio = null;
+      let disposed = false;
+
+      function unlockSound() {
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) return;
+        try {
+          if (!audio) audio = new Audio();
+          if (audio.state === 'suspended') audio.resume().catch(() => {});
+        } catch (_) { /* Visual completion still works if the browser cannot play audio. */ }
+      }
+      function beep() {
+        if (!audio || audio.state !== 'running') return;
+        try {
+          const oscillator = audio.createOscillator();
+          const gain = audio.createGain();
+          const at = audio.currentTime;
+          oscillator.type = 'sine';
+          oscillator.frequency.setValueAtTime(880, at);
+          gain.gain.setValueAtTime(0.0001, at);
+          gain.gain.exponentialRampToValueAtTime(0.16, at + 0.015);
+          gain.gain.setValueAtTime(0.16, at + 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.28);
+          oscillator.connect(gain);
+          gain.connect(audio.destination);
+          oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+          oscillator.start(at);
+          oscillator.stop(at + 0.3);
+        } catch (_) { /* No external audio files or browser permissions are required. */ }
+      }
+      function render(state) {
+        const minutes = Math.floor(state.remainingSeconds / 60);
+        const seconds = state.remainingSeconds % 60;
+        time.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+        time.setAttribute('aria-label', (state.phase === 'work' ? 'Work' : 'Break') + ' time remaining');
+        phaseLabel.textContent = state.phase === 'work' ? 'Work' : 'Break';
+        progress.style.strokeDasharray = String(circumference);
+        progress.style.strokeDashoffset = String(circumference * (1 - state.remainingMs / state.durationMs));
+        startButton.disabled = state.running;
+        startButton.textContent = !state.running && state.remainingMs < state.durationMs ? 'Resume' : 'Start';
+        pauseButton.disabled = !state.running;
+        resetButton.disabled = false;
+      }
+      function dispose() {
+        disposed = true;
+        if (interval !== null) clearInterval(interval);
+        interval = null;
+        document.removeEventListener('visibilitychange', catchUp);
+        window.removeEventListener('pageshow', catchUp);
+        window.removeEventListener('focus', catchUp);
+        if (audio && audio.state !== 'closed') audio.close().catch(() => {});
+      }
+      function apply(event, message) {
+        if (disposed) return;
+        if (!root.isConnected) { dispose(); return; }
+        if (event.completedPhase) {
+          message = event.completedPhase === 'work' ? 'Work complete. Your break is ready — press Start.' : 'Break complete. Your work session is ready — press Start.';
+          beep();
+        }
+        if (message) status.textContent = message;
+        render(event.state);
+        if (event.state.running && interval === null) interval = setInterval(() => apply(timer.tick()), 250);
+        if (!event.state.running && interval !== null) { clearInterval(interval); interval = null; }
+      }
+      function catchUp() { apply(timer.tick()); }
+      startButton.addEventListener('click', () => {
+        unlockSound();
+        const event = timer.start();
+        apply(event, event.state.phase === 'work' ? 'Work session running.' : 'Break running.');
+      });
+      pauseButton.addEventListener('click', () => apply(timer.pause(), 'Paused. Press Resume when you are ready.'));
+      resetButton.addEventListener('click', () => apply(timer.reset(), 'Current phase reset. Press Start when you are ready.'));
+      document.addEventListener('visibilitychange', catchUp);
+      window.addEventListener('pageshow', catchUp);
+      window.addEventListener('focus', catchUp);
+      apply({ state: timer.getState(), completedPhase: null });
+    })();
+    </script>
+  </main>
+</body>
+</html>
