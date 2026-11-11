@@ -9,3 +9,7 @@ Desktop.ini
 *.log
 *.tmp
 *~
+
+# Local package artifacts
+node_modules/
+*.tgz

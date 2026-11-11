@@ -1,0 +1,22 @@
+{
+  "name": "web-blocker-focus-timer",
+  "version": "1.0.0",
+  "description": "A self-contained 25/5 Pomodoro timer with a browser embed, offline HTML and no runtime dependencies.",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": { "types": "./index.d.ts", "import": "./index.js", "default": "./index.js" },
+    "./timer.html": "./timer.html",
+    "./package.json": "./package.json"
+  },
+  "files": ["index.js", "index.d.ts", "timer-html.js", "timer.html", "examples/embed.html", "LICENSE", "NOTICE", "CHANGELOG.md"],
+  "scripts": { "build": "node scripts/build.mjs", "test": "node --test test/package.test.js", "prepack": "npm run build && npm test" },
+  "keywords": ["pomodoro", "focus", "timer", "productivity", "browser", "embed", "offline", "web-blocker"],
+  "homepage": "https://webblockerapp.com/?utm_source=npm&utm_medium=referral&utm_campaign=wb_pomodoro_lite",
+  "repository": { "type": "git", "url": "git+https://github.com/YanTM/web-blocker-focus-timer.git" },
+  "bugs": { "url": "https://github.com/YanTM/web-blocker-focus-timer/issues" },
+  "author": "Yan Lunin",
+  "license": "Apache-2.0",
+  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" }
+}

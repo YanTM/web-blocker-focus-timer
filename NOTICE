@@ -8,8 +8,10 @@ https://www.kaggle.com/code/yanlunin/pomodoro-focus-timer-25-5-by-web-blocker
 The original publication and this distribution use the Apache License,
 Version 2.0. See LICENSE.
 
-The timer logic and behavior are unchanged. The Web Blocker link's referral
-source has been changed from Kaggle to GitHub.
+The timer logic and behavior are unchanged. The standalone GitHub page uses
+GitHub as the Web Blocker referral source. The npm timer.html and its embedded
+HTML string use npm as the referral source instead of Kaggle. The npm package
+adds an isolated iframe mount/removal wrapper and TypeScript declarations.
 
 The Web Blocker name and brand identifiers identify this work. Trademark
 permissions are limited to those provided by Section 6 of the Apache License,
